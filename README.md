@@ -1,4 +1,5 @@
 # Code pour le SPI en ER :
+Etienne PROT
 
 ## Test du SPI : 
 
