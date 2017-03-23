@@ -101,3 +101,47 @@ int main(void) {
   return 0;
 }
 ```
+### Code pour l'arduino câblée avec la carte de test des drivers :
+```C
+#include <avr/io.h>
+#include <util/delay.h>
+
+//SPI initvoid
+void SPIMasterInit(void) {
+//set MOSI, SCK and SS as output
+  DDRB |= ( (1<<PB3)|(1<<PB5)|(1<<PB2) );
+//set SS to high
+  PORTB |= (1<<PB2);
+//enable master SPI at clock rate Fck/128
+  SPCR |= ( (1<<SPE)|(1<<MSTR)|(1<<SPR0)|(1<<SPR1) );
+}
+//master send function
+void SPIMasterSend(uint8_t data){
+//select slave
+  PORTB &= ~(1<<PB2);
+//send data
+  SPDR=data;
+//wait for transmition complete
+  while (!(SPSR &(1<<SPIF)));
+//SS to high
+  PORTB |= (1<<PB2);
+}
+
+int main(void) {
+//initialize master SPI
+  SPIMasterInit();
+//send the configuration address
+  SPIMasterSend(0x10);
+//send the configuration
+  SPIMasterSend(0x02);
+//initial PWM value
+  uint8_t pwmval = 255;
+  uint8_t addressPin = 4;
+  
+  while (1) {
+    SPIMasterSend(addressPin);
+    SPIMasterSend(pwmval-=5);
+    _delay_ms(1000);
+  }
+}
+```
