@@ -130,3 +130,5 @@ void loop() {
   delay(1000);
 }
 ```
+
+Prendre pour le pont diviseur, des résistances 10 et 4.7 les plus petites possibles pour éviter l'effet de condensateur sur les platines d'essaies.
